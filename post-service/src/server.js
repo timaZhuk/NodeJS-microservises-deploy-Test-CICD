@@ -16,7 +16,7 @@ const { RedisStore } = require("rate-limit-redis");
 const Redis = require("ioredis");
 
 //--PORT
-const PORT = process.env.PORT || 4002;
+const PORT = process.env.POST_SERVICE_PORT || 4002;
 
 //----------------------------
 const app = express();
