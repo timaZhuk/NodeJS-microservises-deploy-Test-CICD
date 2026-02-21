@@ -13,7 +13,7 @@ services:
     environment:
       - REDIS_URL=${REDIS_URL}
       - RABBITMQ_URL=${RABBITMQ_URL}
-      - PORT=${API_GATEWAY_PORT}
+      - PORT=${PORT}
       - NODE_ENV=${NODE_ENV}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - IDENTITY_SERVICE_URL=${IDENTITY_SERVICE_URL}
@@ -56,9 +56,7 @@ services:
       - NODE_ENV=${NODE_ENV}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - MONGO_URI=${MONGO_URI}
-      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
-      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
-      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+
     networks:
       - microservices-net
 

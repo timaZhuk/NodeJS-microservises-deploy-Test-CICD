@@ -21,16 +21,16 @@ const MEDIA_SERVICE_PORT = process.env.MEDIA_SERVICE_PORT || 4003;
 const SEARCH_SERVICE_PORT = process.env.SEARCH_SERVICE_PORT || 4004;
 
 const IDENTITY_SERVICE_URL =
-  process.env.IDENTITY_SERVICE_URL || "http://localhost:4001";
+  process.env.IDENTITY_SERVICE_URL || "http://identity-service:4001";
 
 const POST_SERVICE_URL =
-  process.env.POST_SERVICE_URL || "http://localhost:4002";
+  process.env.POST_SERVICE_URL || "http://post-service:4002";
 
 const MEDIA_SERVICE_URL =
-  process.env.MEDIA_SERVICE_URL || "http://localhost:4003";
+  process.env.MEDIA_SERVICE_URL || "http://media-service:4003";
 
 const SEARCH_SERVICE_URL =
-  process.env.SEARCH_SERVICE_URL || "http://localhost:4004";
+  process.env.SEARCH_SERVICE_URL || "http://search-service:4004";
 
 //-----------
 const REDIS_URL = process.env.REDIS_URL;

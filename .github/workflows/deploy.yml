@@ -58,7 +58,7 @@ jobs:
             echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> .env
             echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> .env
             echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
-            echo "API_GATEWAY_PORT=${{ secrets.API_GATEWAY_PORT }}" >> .env
+            echo "PORT=${{ secrets.API_GATEWAY_PORT }}" >> .env
             echo "IDENTITY_SERVICE_URL=${{ secrets.IDENTITY_SERVICE_URL }}" >> .env
             echo "IDENTITY_SERVICE_PORT=${{ secrets.IDENTITY_SERVICE_PORT }}" >> .env
             echo "POST_SERVICE_URL=${{ secrets.POST_SERVICE_URL }}" >> .env
@@ -76,7 +76,7 @@ jobs:
 
 
 
-            # Перезапуск сервисов jr
+            # Перезапуск сервисов 
             #docker compose pull
             docker compose down
             docker compose up -d
