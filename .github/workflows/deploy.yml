@@ -53,29 +53,23 @@ jobs:
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
             # Экспортируем секреты в переменные окружения сессии
-            export MONGO_URI="${{ secrets.MONGO_URI }}"
-            export JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}"
-            export RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" 
-            export REDIS_URL="${{ secrets.REDIS_URL }}"
-            export NODE_ENV="${{ secrets.NODE_ENV }}" 
-
-            export API_GATEWAY_PORT="${{ secrets.API_GATEWAY_PORT }}" 
-            export IDENTITY_SERVICE_URL="${{ secrets.IDENTITY_SERVICE_URL }}" 
-            export IDENTITY_SERVICE_PORT="${{ secrets.IDENTITY_SERVICE_PORT }}" 
-
-            export POST_SERVICE_URL="${{ secrets.POST_SERVICE_URL }}" 
-            export POST_SERVICE_PORT="${{ secrets.POST_SERVICE_PORT }}" 
-
-            export MEDIA_SERVICE_URL="${{ secrets.MEDIA_SERVICE_URL }}"
-            export MEDIA_SERVICE_PORT="${{ secrets.MEDIA_SERVICE_PORT }}"
-
-            export SEARCH_SERVICE_URL="${{ secrets.SEARCH_SERVICE_URL }}"
-            export SEARCH_SERVICE_PORT="${{ secrets.SEARCH_SERVICE_PORT }}"
-
-            export CLOUDINARY_API_KEY="${{ secrets.CLOUDINARY_API_KEY }}"
-            export CLOUDINARY_API_SECRET="${{ secrets.CLOUDINARY_API_SECRET }}"
-            export CLOUDINARY_CLOUD_NAME="${{ secrets.CLOUDINARY_CLOUD_NAME }}"
-
+            echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
+            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> .env
+            echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> .env
+            echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
+            echo "API_GATEWAY_PORT=${{ secrets.API_GATEWAY_PORT }}" >> .env
+            echo "IDENTITY_SERVICE_URL=${{ secrets.IDENTITY_SERVICE_URL }}" >> .env
+            echo "IDENTITY_SERVICE_PORT=${{ secrets.IDENTITY_SERVICE_PORT }}" >> .env
+            echo "POST_SERVICE_URL=${{ secrets.POST_SERVICE_URL }}" >> .env
+            echo "POST_SERVICE_PORT=${{ secrets.POST_SERVICE_PORT }}" >> .env
+            echo "MEDIA_SERVICE_URL=${{ secrets.MEDIA_SERVICE_URL }}" >> .env
+            echo "MEDIA_SERVICE_PORT=${{ secrets.MEDIA_SERVICE_PORT }}" >> .env
+            echo "SEARCH_SERVICE_URL=${{ secrets.SEARCH_SERVICE_URL }}" >> .env
+            echo "SEARCH_SERVICE_PORT=${{ secrets.SEARCH_SERVICE_PORT }}" >> .env
+            echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env
+            echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
+            echo "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> .env
 
 
 
@@ -83,7 +77,7 @@ jobs:
 
 
             # Перезапуск сервисов
-            docker compose pull
+            #docker compose pull
             docker compose down
             docker compose up -d
 
