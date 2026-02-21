@@ -23,7 +23,7 @@ jobs:
 
       - name: Build and push
         run: |
-          # Используем плагин compose, который уже есть на ubuntu-latest в GitHub Actions
+          #1 Используем плагин compose, который уже есть на ubuntu-latest в GitHub Actions
           docker compose build
           docker compose push
 
