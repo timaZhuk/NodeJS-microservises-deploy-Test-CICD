@@ -9,10 +9,7 @@ services:
     depends_on:
       - redis
       - rabbitmq
-      - identity-service
-      - media-service
-      - post-service
-      - search-service
+
     environment:
       - REDIS_URL=${REDIS_URL}
       - RABBITMQ_URL=${RABBITMQ_URL}
