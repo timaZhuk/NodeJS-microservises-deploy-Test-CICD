@@ -1,0 +1,130 @@
+version: "3.8"
+
+services:
+  api-gateway:
+    build: ./api-gateway
+    restart: always # Добавь эту строку
+    ports:
+      - "4000:4000"
+    #env_file: ./api-gateway/.env
+    depends_on:
+      - redis
+      - rabbitmq
+
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - PORT=${PORT}
+      - NODE_ENV=${NODE_ENV}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - IDENTITY_SERVICE_URL=${IDENTITY_SERVICE_URL}
+      - IDENTITY_SERVICE_PORT=${IDENTITY_SERVICE_PORT}
+      - POST_SERVICE_URL=${POST_SERVICE_URL}
+      - POST_SERVICE_PORT=${POST_SERVICE_PORT}
+      - MEDIA_SERVICE_URL=${MEDIA_SERVICE_URL}
+      - MEDIA_SERVICE_PORT=${MEDIA_SERVICE_PORT}
+      - SEARCH_SERVICE_URL=${SEARCH_SERVICE_URL}
+      - SEARCH_SERVICE_PORT=${SEARCH_SERVICE_PORT}
+    networks:
+      - microservices-net
+
+  identity-service:
+    build: ./identity-service
+    restart: always # Добавь эту строку
+    #env_file: ./identity-service/.env
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - IDENTITY_SERVICE_POR=${IDENTITY_SERVICE_PORT}
+      - NODE_ENV=${NODE_ENV}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - MONGO_URI=${MONGO_URI}
+    networks:
+      - microservices-net
+
+  post-service:
+    build: ./post-service
+    restart: always # Добавь эту строку
+    #env_file: ./post-service/.env
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - POST_SERVICE_POR=${POST_SERVICE_PORT}
+      - NODE_ENV=${NODE_ENV}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - MONGO_URI=${MONGO_URI}
+
+    networks:
+      - microservices-net
+
+  media-service:
+    build: ./media-service
+    restart: always # Добавь эту строку
+    #env_file: ./media-service/.env
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - MEDIA_SERVICE_PORT=${MEDIA_SERVICE_PORT}
+      - NODE_ENV=${NODE_ENV}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - MONGO_URI=${MONGO_URI}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+    networks:
+      - microservices-net
+
+  search-service:
+    build: ./search-service
+    restart: always # Добавь эту строку
+    #env_file: ./search-service/.env
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - SEARCH_SERVICE_PORT=${SEARCH_SERVICE_PORT}
+      - NODE_ENV=${NODE_ENV}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - MONGO_URI=${MONGO_URI}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+    networks:
+      - microservices-net
+
+  redis:
+    image: redis:alpine
+    restart: always # Добавь эту строку
+    ports:
+      - "6379:6379"
+    networks:
+      - microservices-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always # Добавь эту строку
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s # Чаще проверяем при старте
+      timeout: 5s
+      retries: 5
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge
