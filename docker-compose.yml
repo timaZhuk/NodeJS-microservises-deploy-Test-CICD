@@ -58,7 +58,7 @@ services:
     environment:
       - REDIS_URL=${REDIS_URL}
       - RABBITMQ_URL=${RABBITMQ_URL}
-      - POST_SERVICE_POR=${POST_SERVICE_PORT}
+      - POST_SERVICE_PORT=${POST_SERVICE_PORT}
       - NODE_ENV=${NODE_ENV}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - MONGO_URI=${MONGO_URI}
