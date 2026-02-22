@@ -3,6 +3,7 @@ version: "3.8"
 services:
   api-gateway:
     build: ./api-gateway
+    restart: always # Добавь эту строку
     ports:
       - "4000:4000"
     #env_file: ./api-gateway/.env
@@ -29,6 +30,7 @@ services:
 
   identity-service:
     build: ./identity-service
+    restart: always # Добавь эту строку
     #env_file: ./identity-service/.env
     depends_on:
       - redis
@@ -45,6 +47,7 @@ services:
 
   post-service:
     build: ./post-service
+    restart: always # Добавь эту строку
     #env_file: ./post-service/.env
     depends_on:
       - redis
@@ -62,6 +65,7 @@ services:
 
   media-service:
     build: ./media-service
+    restart: always # Добавь эту строку
     #env_file: ./media-service/.env
     depends_on:
       - redis
@@ -81,6 +85,7 @@ services:
 
   search-service:
     build: ./search-service
+    restart: always # Добавь эту строку
     #env_file: ./search-service/.env
     depends_on:
       - redis
@@ -100,6 +105,7 @@ services:
 
   redis:
     image: redis:alpine
+    restart: always # Добавь эту строку
     ports:
       - "6379:6379"
     networks:
@@ -107,15 +113,15 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
+    restart: always # Добавь эту строку
     ports:
       - "5672:5672"
       - "15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 30s
-      timeout: 10s
+      interval: 10s # Чаще проверяем при старте
+      timeout: 5s
       retries: 5
-      #start_period: 30s
     networks:
       - microservices-net
 
