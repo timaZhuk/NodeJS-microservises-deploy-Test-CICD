@@ -37,6 +37,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
+            mkdir -p ~/projects/node-micro-practice
             cd ~/projects/node-micro-practice
 
             if [ ! -d ".git" ]; then
