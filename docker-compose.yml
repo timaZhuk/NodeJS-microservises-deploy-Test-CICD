@@ -45,7 +45,7 @@ services:
 
   post-service:
     build: ./post-service
-    env_file: ./post-service/.env
+    #env_file: ./post-service/.env
     depends_on:
       - redis
       - rabbitmq
