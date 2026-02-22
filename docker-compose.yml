@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   api-gateway:
+    image: tim17z/api-gateway:latest
     build: ./api-gateway
     restart: always # Добавь эту строку
     ports:
@@ -29,6 +30,7 @@ services:
       - microservices-net
 
   identity-service:
+    image: tim17z/identity-service:latest
     build: ./identity-service
     restart: always # Добавь эту строку
     #env_file: ./identity-service/.env
@@ -46,6 +48,7 @@ services:
       - microservices-net
 
   post-service:
+    image: tim17z/post-service:latest
     build: ./post-service
     restart: always # Добавь эту строку
     #env_file: ./post-service/.env
@@ -64,6 +67,7 @@ services:
       - microservices-net
 
   media-service:
+    image: tim17z/media-service:latest
     build: ./media-service
     restart: always # Добавь эту строку
     #env_file: ./media-service/.env
@@ -84,6 +88,7 @@ services:
       - microservices-net
 
   search-service:
+    image: tim17z/search-service:latest
     build: ./search-service
     restart: always # Добавь эту строку
     #env_file: ./search-service/.env
