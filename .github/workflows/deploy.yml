@@ -23,7 +23,6 @@ jobs:
 
       - name: Build and push
         run: |
-          # Используем плагин compose, который уже есть на ubuntu-latest в GitHub Actions
           docker compose build
           docker compose push
 
@@ -38,48 +37,49 @@ jobs:
           username: ubuntu
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
-            # Переходим в папку проекта (создай её заранее, если нет)
-            mkdir -p ~/projects/node-micro-practice
             cd ~/projects/node-micro-practice
 
-            # Если папка пустая - клонируем, если нет - подтягиваем изменения
             if [ ! -d ".git" ]; then
               git clone https://github.com/timaZhuk/NodeJS-microservises-deploy-Test-CICD.git .
             else
               git pull origin main
             fi
 
-            # Авторизуемся в Docker, чтобы стянуть новые приватные образы
+            # 1. Создаем временный файл со всеми переменными
+            cat <<EOF > .env
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+            RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}
+            REDIS_URL=${{ secrets.REDIS_URL }}
+            NODE_ENV=${{ secrets.NODE_ENV }}
+            API_GATEWAY_PORT=${{ secrets.API_GATEWAY_PORT }}
+            IDENTITY_SERVICE_URL=${{ secrets.IDENTITY_SERVICE_URL }}
+            IDENTITY_SERVICE_PORT=${{ secrets.IDENTITY_SERVICE_PORT }}
+            POST_SERVICE_URL=${{ secrets.POST_SERVICE_URL }}
+            POST_SERVICE_PORT=${{ secrets.POST_SERVICE_PORT }}
+            MEDIA_SERVICE_URL=${{ secrets.MEDIA_SERVICE_URL }}
+            MEDIA_SERVICE_PORT=${{ secrets.MEDIA_SERVICE_PORT }}
+            SEARCH_SERVICE_URL=${{ secrets.SEARCH_SERVICE_URL }}
+            SEARCH_SERVICE_PORT=${{ secrets.SEARCH_SERVICE_PORT }}
+            CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+            CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+            CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+            EOF
+
+            # 2. Копируем этот файл в папки каждого микросервиса
+            # Если папки называются иначе, поправь пути ниже
+            cp .env ./api-gateway/.env
+            cp .env ./identity-service/.env
+            cp .env ./post-service/.env
+            cp .env ./media-service/.env
+            cp .env ./search-service/.env
+
+            # 3. Авторизация в Docker
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-            # Экспортируем секреты в переменные окружения сессии
-            echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
-            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
-            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> .env
-            echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> .env
-            echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
-            echo "PORT=${{ secrets.API_GATEWAY_PORT }}" >> .env
-            echo "IDENTITY_SERVICE_URL=${{ secrets.IDENTITY_SERVICE_URL }}" >> .env
-            echo "IDENTITY_SERVICE_PORT=${{ secrets.IDENTITY_SERVICE_PORT }}" >> .env
-            echo "POST_SERVICE_URL=${{ secrets.POST_SERVICE_URL }}" >> .env
-            echo "POST_SERVICE_PORT=${{ secrets.POST_SERVICE_PORT }}" >> .env
-            echo "MEDIA_SERVICE_URL=${{ secrets.MEDIA_SERVICE_URL }}" >> .env
-            echo "MEDIA_SERVICE_PORT=${{ secrets.MEDIA_SERVICE_PORT }}" >> .env
-            echo "SEARCH_SERVICE_URL=${{ secrets.SEARCH_SERVICE_URL }}" >> .env
-            echo "SEARCH_SERVICE_PORT=${{ secrets.SEARCH_SERVICE_PORT }}" >> .env
-            echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env
-            echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
-            echo "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> .env
-
-
-
-
-
-
-            # Перезапуск сервисов 
-            #docker compose pull
+            # 4. Перезапуск
             docker compose down
             docker compose up -d
 
-            # Очистка старых ненужных образов (чтобы t3.micro не забился)
+            # 5. Очистка
             docker image prune -f
