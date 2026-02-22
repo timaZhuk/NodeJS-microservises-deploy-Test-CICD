@@ -61,7 +61,7 @@ jobs:
             RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}
             REDIS_URL=${{ secrets.REDIS_URL }}
             NODE_ENV=${{ secrets.NODE_ENV }}
-            API_GATEWAY_PORT=${{ secrets.API_GATEWAY_PORT }}
+            PORT=${{ secrets.API_GATEWAY_PORT }}
             IDENTITY_SERVICE_URL=${{ secrets.IDENTITY_SERVICE_URL }}
             IDENTITY_SERVICE_PORT=${{ secrets.IDENTITY_SERVICE_PORT }}
             POST_SERVICE_URL=${{ secrets.POST_SERVICE_URL }}
