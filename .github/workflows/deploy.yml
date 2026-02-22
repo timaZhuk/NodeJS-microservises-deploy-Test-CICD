@@ -37,19 +37,22 @@ jobs:
           username: ubuntu
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
-            # 1. Создаем структуру папок
+            # 1. Подготовка папки
             mkdir -p ~/projects/node-micro-practice
             cd ~/projects/node-micro-practice
 
-            # 2. Клонируем или обновляем репозиторий
+            # 2. Логика получения кода (Исправлено!)
             if [ ! -d ".git" ]; then
-              # Исправлено: убрано двойное git clone
+              echo "Папка пуста, клонирую репозиторий..."
+              # Клонируем в текущую папку
               git clone https://github.com/timaZhuk/NodeJS-microservises-deploy-Test-CICD.git .
             else
-              git pull origin main
+              echo "Репозиторий уже есть, обновляю..."
+              git fetch --all
+              git reset --hard origin/main
             fi
 
-            # 3. Создаем главный файл .env
+            # 3. Теперь, когда файлы скачаны, создаем .env
             cat <<EOF > .env
             MONGO_URI=${{ secrets.MONGO_URI }}
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
@@ -70,25 +73,18 @@ jobs:
             CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
             EOF
 
-            # 4. Копируем .env во все подпапки сервисов
+            # 4. Копируем конфиги в сервисы (теперь папки точно есть)
             cp .env ./api-gateway/.env
             cp .env ./identity-service/.env
             cp .env ./post-service/.env
             cp .env ./media-service/.env
             cp .env ./search-service/.env
 
-            # Проверка для логов (ты увидишь это в GitHub Actions)
-            echo "--- Проверка структуры папок ---"
-            ls -la
-            echo "--- Проверка наличия .env в сервисах ---"
-            ls -la api-gateway/.env media-service/.env
-
-            # 5. Авторизация в Docker
+            # 5. Запуск Docker
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-            # 6. Перезапуск контейнеров
-            docker compose down
-            docker compose up -d
+            # Принудительно указываем файл, если он не подхватился
+            docker compose -f docker-compose.yml down
+            docker compose -f docker-compose.yml up -d
 
-            # 7. Очистка старых образов
             docker image prune -f
