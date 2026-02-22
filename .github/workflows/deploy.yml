@@ -37,16 +37,19 @@ jobs:
           username: ubuntu
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
+            # 1. Создаем структуру папок
             mkdir -p ~/projects/node-micro-practice
             cd ~/projects/node-micro-practice
 
+            # 2. Клонируем или обновляем репозиторий
             if [ ! -d ".git" ]; then
-              git clone git clone https://github.com/timaZhuk/NodeJS-microservises-deploy-Test-CICD.git .
+              # Исправлено: убрано двойное git clone
+              git clone https://github.com/timaZhuk/NodeJS-microservises-deploy-Test-CICD.git .
             else
               git pull origin main
             fi
 
-            # 1. Создаем временный файл со всеми переменными
+            # 3. Создаем главный файл .env
             cat <<EOF > .env
             MONGO_URI=${{ secrets.MONGO_URI }}
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
@@ -67,20 +70,25 @@ jobs:
             CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
             EOF
 
-            # 2. Копируем этот файл в папки каждого микросервиса
-            # Если папки называются иначе, поправь пути ниже
+            # 4. Копируем .env во все подпапки сервисов
             cp .env ./api-gateway/.env
             cp .env ./identity-service/.env
             cp .env ./post-service/.env
             cp .env ./media-service/.env
             cp .env ./search-service/.env
 
-            # 3. Авторизация в Docker
+            # Проверка для логов (ты увидишь это в GitHub Actions)
+            echo "--- Проверка структуры папок ---"
+            ls -la
+            echo "--- Проверка наличия .env в сервисах ---"
+            ls -la api-gateway/.env media-service/.env
+
+            # 5. Авторизация в Docker
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-            # 4. Перезапуск
+            # 6. Перезапуск контейнеров
             docker compose down
             docker compose up -d
 
-            # 5. Очистка
+            # 7. Очистка старых образов
             docker image prune -f
